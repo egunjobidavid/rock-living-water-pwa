@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Rock Living Water</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="icon" href="/images/logo.png" type="image/png">
+   
+</head>
+<body>
+
+<!-- Header Navigation -->
+    <header class="app-header">
+        <button class="mobile-menu-btn" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i> <!-- Font Awesome hamburger icon -->
+      </button>
+        <div class="logo">
+          <span class="logo-icon">R</span>
+          Rock App
+        </div>
+          
+        <nav class="primary-nav">
+            <a class="nav-item active" href="#" onclick="showSection('dashboard')">
+                <i class="fas fa-tachometer-alt"></i>
+                Dashboard
+            </a>
+            <div class="nav-dropdown">
+                <a class="nav-item dropdown-toggle" href="#">
+                    <i class="fas fa-shopping-cart"></i>
+                    Sales
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="dropdown-content">
+                    <a class="dropdown-item" href="#" onclick="showSubSection('sales', 'sale-form')">
+                        <i class="fas fa-plus"></i>
+                        Add Sale
+                    </a>
+                    <a class="dropdown-item" href="#" onclick="showSubSection('sales', 'sales-records')">
+                        <i class="fas fa-table"></i>
+                        Sales Records
+                    </a>
+                    <a class="dropdown-item" href="#" onclick="showSubSection('sales', 'customer-history')">
+                        <i class="fas fa-history"></i>
+                        Customer Purchase History
+                    </a>
+                    <a class="dropdown-item" href="#" onclick="showSubSection('sales', 'update-sales')">
+                        <i class="fas fa-edit"></i>
+                        Update Sales
+                    </a>
+                </div>
+            </div>
+            <a class="nav-item" href="#" onclick="showSection('reports')">
+                <i class="fas fa-chart-bar"></i>
+                Reports
+            </a>
+            <div class="nav-dropdown">
+                <a class="nav-item dropdown-toggle" href="#">
+                    <i class="fas fa-shopping-cart"></i>
+                    Management
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="dropdown-content">
+                    <a class="dropdown-item" href="#" onclick="showSubSection('management', 'customers')">
+                        <i class="fas fa-table"></i>
+                        Customer
+                    </a>
+                    <a class="dropdown-item" href="#" onclick="showSubSection('management', 'vendors')">
+                        <i class="fas fa-history"></i>
+                        Vendor
+                    </a>
+                    <a class="dropdown-item" href="#" onclick="showSubSection('management', 'admin')">
+                        <i class="fas fa-edit"></i>
+                        Admin Login
+                    </a>
+                </div>
+            </div>
+            <a class="nav-item" href="#" onclick="showSection('expenses')">
+                <i class="fas fa-money-bill-wave"></i>
+                Expenses
+            </a>
+        </nav>
+        
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" placeholder="Search Records..." id="globalSearch">
+        </div>
+        
+        <div class="user-actions">
+            <button class="action-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </button>
+            <button class="action-btn"><i class="fas fa-comment-alt"></i></button>
+            <div class="user-avatar">RE</div>
+        </div>
+    </header>
+
+       <!-- Main Content -->
+    <div class="main-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3>Menu</h3>
+                <nav class="sidebar-nav">
+                    <a class="sidebar-item active" href="#" onclick="showSubSection('sales', 'sale-form')">
+                        <i class="fas fa-dot-circle-o"></i>
+                        Add Sales
+                    </a>
+                        <a class="sidebar-item" href="#" onclick="showSubSection('sales', 'update-sales')">
+                        <i class="fas fa-dot-circle-o"></i>
+                        Update Sales
+                    </a>
+                    <a class="sidebar-item" href="#" onclick="showSubSection('sales', 'sales-records')">
+                        <i class="fas fa-dot-circle-o"></i>
+                        Sales Records
+                    </a>
+                    <a class="sidebar-item" href="#" onclick="showSubSection('sales', 'customer-history')">
+                        <i class="fas fa-dot-circle-o"></i>
+                        Customer P. His.
+                    </a>
+                    <a class="sidebar-item" href="#" onclick="showSection('expenses')">
+                        <i class="fas fa-dot-circle-o"></i>
+                        Add Expenses
+                    </a>
+                    <a class="sidebar-item" href="#" onclick="showSection('dashboard')">
+                        <i class="fas fa-dot-circle-o"></i>
+                        Dashboard
+                    </a>
+  
+                </nav>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3>Management</h3>
+                <nav class="sidebar-nav">
+                   <a class="sidebar-item" href="#" onclick="showSubSection('management', 'customers')">
+                        <i class="fas fa-dot-circle-o "></i>
+                        Customers
+                    </a>
+                   <a class="sidebar-item" href="#" onclick="showSubSection('management', 'vendors')">
+                        <i class="fas fa-dot-circle-o"></i>
+                        Vendors
+                    </a>
+                    <a class="sidebar-item" href="#" onclick="showSubSection('management', 'admin')">
+                        <i class="fas fa-dot-circle-o"></i>
+                        Admin
+                    </a>
+                </nav>
+            </div>
+        </aside>
+        
+        <!-- Dashboard Content -->
+    <main class="content-area">
+       <div class="tab-content">
+        <div class="section-content active" id="dashboard">
+          <div class="page-header">
+            <h1 class="page-title">Dashboard</h1>
+            <div class="page-actions">
+              <button class="btn btn-outline" id="exportCSV">
+                <i class="fas fa-file-export"></i> Export Report
+              </button>
+              <button class="btn btn-primary" onclick="showSubSection('sales', 'sale-form')">
+                <i class="fas fa-plus"></i> New Sale
+              </button>
+            </div>
+          </div>
+
+          <form id="dashboardDateForm" class="mb-4">
+            <div class="row g-3 align-items-end">
+              <div class="col-12 col-md-4">
+                <label for="dashboardStartDate" class="form-label">Start Date:</label>
+                <input type="date" id="dashboardStartDate" class="form-control">
+              </div>
+              <div class="col-12 col-md-4">
+                <label for="dashboardEndDate" class="form-label">End Date:</label>
+                <input type="date" id="dashboardEndDate" class="form-control">
+              </div>
+              <div class="col-12 col-md-4">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+              </div>
+            </div>
+          </form>
+
+          <div id="dashboardMessage" class="alert alert-info mb-4" style="display: none;"></div>
+
+          <div class="stats-container">
+            <div class="stat-card start-card">
+              <div class="stat-icon" style="background: rgba(76, 201, 240, 0.3); color: #4cc9f0;">
+                <i class="fas fa-shopping-cart"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value" id="totalSales">₦0</div>
+                <div class="stat-label">Total Sales</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(76, 201, 240, 0.1); color: #4cc9f0;">
+                <i class="fas fa-box"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value" id="totalExpenses">₦0</div>
+                <div class="stat-label">Total Expenses</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(251, 191, 36, 0.1); color: #fbbf24;">
+                <i class="fas fa-money-bill-wave"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value" id="netIncome">₦0</div>
+                <div class="stat-label"> Net Income</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="report-container">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Financial Summary</h3>
+              </div>
+              <div class="card-body">
+                <div class="report-content">
+                  <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(248, 113, 113, 0.1); color: #f87171;">
+                      <i class="fas fa-money-check-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                      <div class="stat-value" id="totalQuantitySold">₦0</div>
+                      <div class="stat-label">Total Qty Sold</div>
+                    </div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(74, 222, 128, 0.1); color: #4ade80;">
+                      <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-content">
+                      <div class="stat-value" id="totalExpensesPaid">₦0</div>
+                      <div class="stat-label">Expenses Paid</div>
+                    </div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(74, 222, 128, 0.1); color: #4ade80;">
+                      <i class="fas fa-money-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                      <div class="stat-value" id="overduePayments">₦0</div>
+                      <div class="stat-label">Overdue</div>
+                    </div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(251, 191, 36, 0.1); color: #fbbf24;">
+                      <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                      <div class="stat-value" id="outstandingPayments">₦0</div>
+                      <div class="stat-label">Outstanding</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Analytics</h3>
+            </div>
+            <div class="card-body">
+              <div class="flex">
+                <div class="chart-container">
+                  <canvas id="dashboardPaymentMethodChart"></canvas>
+                </div>
+                <div class="chart-container" style="display: flex; justify-content: center; align-items: center; height: 400px; max-width: 100%;">
+                    <canvas id="dashboardTotalSalesChart"></canvas>
+                </div>
+              </div>
+              <div class="flex">
+                <div class="chart-container">
+                  <canvas id="dashboardTopCustomersChart"></canvas>
+                </div>
+                <div class="chart-container">
+                  <canvas id="dashboardTopExpenseCategoriesChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+                <!-- Sales Section -->
+                <div class="section-content" id="sales">
+                    <div id="sale-form" class="sub-section active">
+                        <div class="page-header">
+                            <h1 class="page-title">Add Sale</h1>
+                        </div>
+                        <form id="saleForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="saleCustomer" class="form-label">Customer</label>
+                                    <select id="saleCustomer" class="form-select" required></select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="saleDate" class="form-label">Date</label>
+                                    <input type="date" id="saleDate" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="saleQuantity" class="form-label">Quantity</label>
+                                    <input type="number" id="saleQuantity" class="form-control" min="1" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="saleTotalAmount" class="form-label">Total Amount (NGN)</label>
+                                    <input type="number" id="saleTotalAmount" class="form-control" step="0.1" min="0" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="saleAmountPaid" class="form-label">Amount Paid (NGN)</label>
+                                    <input type="number" id="saleAmountPaid" class="form-control" step="0.1" min="0" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="paymentMethod" class="form-label">Payment Method</label>
+                                    <select id="salePaymentMethod" class="form-select" required>
+                                        <option value="cash">Cash</option>
+                                        <option value="transfer">Transfer</option>
+                                        <option value="credit">Credit</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6" id="creditDaysGroup" style="display: none;">
+                                    <label for="saleCreditDays" class="form-label">Credit Days</label>
+                                    <input type="number" id="saleCreditDays" class="form-control" min="1">
+                                </div>
+                                <div class="col-12">
+                                    <label for="saleNotes" class="form-label">Notes</label>
+                                    <textarea id="saleNotes" class="form-control" rows="4"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">Add Sale</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="sales-records" class="sub-section">
+                        <div class="page-header">
+                            <h1 class="page-title">Sales Records</h1>
+                        </div>
+                        <div id="salesTableMessage" class="alert alert-info" style="display: none;"></div>
+                        <div class="table-responsive">
+                            <table id="salesTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Customer</th>
+                                        <th>Date</th>
+                                        <th>Quantity</th>
+                                        <th>Total Amount</th>
+                                        <th>Amount Paid</th>
+                                        <th>Payment Method</th>
+                                        <th>Status</th>
+                                        <th>Balance</th>
+                                        <th>Due Date</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="customer-history" class="sub-section">
+                        <div class="page-header">
+                            <h1 class="page-title">Customer Purchase History</h1>
+                        </div>
+                        <form id="customerSalesForm">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="historyCustomer" class="form-label">Select Customer</label>
+                                    <select id="historyCustomer" class="form-select" required></select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="historyStartDate" class="form-label">Start Date</label>
+                                    <input type="date" id="historyStartDate" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="historyEndDate" class="form-label">End Date</label>
+                                    <input type="date" id="historyEndDate" class="form-control">
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">View Purchase History</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div id="customerSalesTableMessage" class="alert alert-info mt-3" style="display: none;"></div>
+                        <div class="table-responsive">
+                            <table id="customerSalesTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Date</th>
+                                        <th>Quantity</th>
+                                        <th>Total Amount</th>
+                                        <th>Amount Paid</th>
+                                        <th>Payment Method</th>
+                                        <th>Status</th>
+                                        <th>Balance</th>
+                                        <th>Due Date</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="update-sales" class="sub-section">
+                        <div class="page-header">
+                            <h1 class="page-title">Update Sales</h1>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="saleSearch" class="form-label">Search Sales</label>
+                                    <input type="text" id="saleSearch" class="form-control" placeholder="Enter sale ID, customer name, etc.">
+                                    <div id="saleSearchResults" class="list-group mt-2 d-none"></div>
+                                </div>
+                                <form id="updatePaymentForm" class="mb-4">
+                                    <div class="mb-3">
+                                        <label for="updateSaleId" class="form-label">Sale ID</label>
+                                        <input type="text" id="updateSaleId" class="form-control" readonly>
+                                        <small>Customer: <span id="updateCustomerName"></span></small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="updateAmount" class="form-label">Amount</label>
+                                        <input type="number" id="updateAmount" class="form-control" step="0.1" min="0" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Update Payment</button>
+                                </form>
+                                <form id="archiveForm" class="mb-4">
+                                    <div class="mb-3">
+                                        <label for="archiveSaleId" class="form-label">Sale ID</label>
+                                        <input type="text" id="archiveSaleId" class="form-control" readonly>
+                                        <small>Customer: <span id="archiveCustomerName"></span></small>
+                                    </div>
+                                    <button type="submit" class="btn btn-warning">Archive Sale</button>
+                                </form>
+                                <form id="deleteForm">
+                                    <div class="mb-3">
+                                        <label for="deleteSaleId" class="form-label">Sale ID</label>
+                                        <input type="text" id="deleteSaleId" class="form-control" readonly>
+                                        <small>Customer: <span id="deleteCustomerName"></span></small>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger">Delete Sale</button>
+                                </form>
+                                <div id="actionMessage" class="alert" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Section -->
+                <div class="section-content" id="reports">
+                    <div class="page-header">
+                        <h1 class="page-title">Reports</h1>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="reportForm">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label for="startDate" class="form-label">Start Date</label>
+                                        <input type="date" id="startDate" class="form-control">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="endDate" class="form-label">End Date</label>
+                                        <input type="date" id="endDate" class="form-control">
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-end">
+                                        <button type="submit" class="btn btn-primary me-2">Generate Report</button>
+                                        <button type="button" id="exportReportCSV" class="btn btn-secondary">Export CSV</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <div id="reportsMessage" class="alert alert-info mt-3" style="display: none;"></div>
+                            <div class="chart-container">
+                                <canvas id="paymentMethodChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="topCustomersChart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="topExpenseCategoriesChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Management Section -->
+            <div class="section-content" id="management">
+                       <!-- Customers Sub-section -->
+                    <div id="customers" class="sub-section active">
+                        <div class="page-header">
+                            <h1 class="page-title">Customers </h1>
+                        </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Add Customer</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="customerForm">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="customerName" class="form-label">Name</label>
+                                        <input type="text" id="customerName" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="customerPhone" class="form-label">Phone</label>
+                                        <input type="text" id="customerPhone" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="customerEmail" class="form-label">Email</label>
+                                        <input type="email" id="customerEmail" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="customerTown" class="form-label">Town</label>
+                                        <input type="text" id="customerTown" class="form-control">
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="customerNotes" class="form-label">Notes</label>
+                                        <textarea id="customerNotes" class="form-control" rows="4"></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary">Add Customer</button>
+                                    </div>
+                                </div>
+                            </form>
+                          </div>
+                      </div>
+                     <div class="card mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Customer List</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="customersTableMessage" class="alert alert-info" style="display: none;"></div>
+                            <div class="table-responsive">
+                                <table id="customersTable" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Phone</th>
+                                            <th>Email</th>
+                                            <th>Town</th>
+                                            <th>Total Purchases</th>
+                                            <th>Balance</th>
+                                            <th>Since</th>
+                                            <th>Notes</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                  <!-- Vendors Sub-section -->
+                <div id="vendors" class="sub-section">
+                    <div class="page-header">
+                        <h1 class="page-title">Vendors</h1>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Add Vendor</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="vendorForm">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="vendorName" class="form-label">Name</label>
+                                        <input type="text" id="vendorName" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="vendorServiceCategory" class="form-label">Service Category</label>
+                                        <select id="vendorServiceCategory" class="form-select" required>
+                                            <option value="" disabled selected>Select Category</option>
+                                            <option value="Mechanic">Mechanic</option>
+                                            <option value="GenRepairs">Generator Repairs</option>
+                                            <option value="Supplier">Supplier</option>
+                                            <option value="Plumber">Plumber</option>
+                                            <option value="Electrician">Electrician</option>
+                                            <option value="ContractStaff">Contract Staff</option>
+                                            <option value="Others">Others</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="vendorPhone" class="form-label">Phone</label>
+                                        <input type="text" id="vendorPhone" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="vendorTown" class="form-label">Town</label>
+                                        <input type="text" id="vendorTown" class="form-control">
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="vendorNotes" class="form-label">Notes</label>
+                                        <textarea id="vendorNotes" class="form-control" rows="4"></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary">Add Vendor</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Vendor List</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="vendorsTableMessage" class="alert alert-info" style="display: none;"></div>
+                            <div class="table-responsive">
+                                <table id="vendorsTable" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Service Category</th>
+                                            <th>Phone</th>
+                                            <th>Town</th>
+                                            <th>Total Expenses</th>
+                                            <th>Balance</th>
+                                            <th>Since</th>
+                                            <th>Notes</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Vendor Payment History</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="vendorExpensesForm">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label for="historyVendor" class="form-label">Select Vendor</label>
+                                        <select id="historyVendor" class="form-select" required></select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="historyVendorStartDate" class="form-label">Start Date</label>
+                                        <input type="date" id="historyVendorStartDate" class="form-control">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="historyVendorEndDate" class="form-label">End Date</label>
+                                        <input type="date" id="historyVendorEndDate" class="form-control">
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary">View Expense History</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <div id="vendorExpensesTableMessage" class="alert alert-info mt-3" style="display: none;"></div>
+                            <div class="table-responsive">
+                                <table id="vendorExpensesTable" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Category</th>
+                                            <th>Vendor</th>
+                                            <th>Date</th>
+                                            <th>Quantity</th>
+                                            <th>Total Expenses</th>
+                                            <th>Amount Paid</th>
+                                            <th>Notes</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+
+            <!-- Admin Sub-section -->
+            <div id="admin" class="sub-section">
+                <div class="page-header">
+                    <h1 class="page-title">Admin Login</h1>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Admin Login</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="adminEmail" class="form-label">Email</label>
+                                <input type="email" id="adminEmail" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="adminPassword" class="form-label">Password</label>
+                                <input type="password" id="adminPassword" class="form-control" required>
+                            </div>
+                             <!-- <button type="submit" class="btn btn-primary">Login</button> -->
+                        </form>
+                        <div id="adminMessage" class="alert alert-info mt-3" style="display: none;"></div>
+                        <div id="adminActions" style="display: none;">
+                            <h3 class="mt-4">Admin Actions</h3>
+                            <form id="archiveExpenseForm" class="mb-4">
+                                <div class="mb-3">
+                                    <label for="archiveExpenseId" class="form-label">Expense ID</label>
+                                    <input type="text" id="archiveExpenseId" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn btn-warning">Archive Expense</button>
+                            </form>
+                            <form id="deleteExpenseForm">
+                                <div class="mb-3">
+                                    <label for="deleteExpenseId" class="form-label">Expense ID</label>
+                                    <input type="text" id="deleteExpenseId" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn btn-danger">Delete Expense</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                <!-- Expenses Section -->
+                <div class="section-content" id="expenses">
+                    <div class="page-header">
+                        <h1 class="page-title">Expenses</h1>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Add Expense</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="expenseForm">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="expenseVendor" class="form-label">Vendor</label>
+                                        <select id="expenseVendor" class="form-select" required></select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="expenseCategory" class="form-label">Expenses Category</label>
+                                        <select id="expenseCategory" class="form-select" required>
+                                            <option value="" disabled selected>Select Category</option>
+                                            <option value="VehicleFuel">Vehicle Fuel</option>
+                                            <option value="GenFuel">Generator Fuel</option>
+                                            <option value="VehicleMaintenance">Vehicle Maintenance</option>
+                                            <option value="FactoryMaintenance">Factory Maintenance</option>
+                                            <option value="Salary">Salary</option>
+                                            <option value="Allowance">Allowance</option>
+                                            <option value="Supply">Supply</option>
+                                            <option value="Others">Others</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="expenseStaff" class="form-label">Staff</label>
+                                        <input type="text" id="expenseStaff" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="expenseDate" class="form-label">Date</label>
+                                        <input type="date" id="expenseDate" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="expenseQuantity" class="form-label">Quantity</label>
+                                        <input type="number" id="expenseQuantity" class="form-control" step="0.1" min="0" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="expenseTotalAmount" class="form-label">Total Expenses (NGN)</label>
+                                        <input type="number" id="expenseTotalAmount" class="form-control" step="0.1" min="0" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="expenseAmountPaid" class="form-label">Amount Paid (NGN)</label>
+                                        <input type="number" id="expenseAmountPaid" class="form-control" step="0.1" min="0" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="expenseNotes" class="form-label">Notes</label>
+                                        <textarea id="expenseNotes" class="form-control" rows="4"></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary">Add Expense</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Expenses Records</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="expensesTableMessage" class="alert alert-info" style="display: none;"></div>
+                            <div class="table-responsive">
+                                <table id="expensesTable" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Vendor</th>
+                                            <th>Category</th>
+                                            <th>Date</th>
+                                            <th>Quantity</th>
+                                            <th>Total Expenses</th>
+                                            <th>Amount Paid</th>
+                                            <th>Notes</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+ 
+            <!-- Error Console -->
+            <div class="mt-3">
+                <button id="toggleErrorConsole" class="btn btn-secondary">Toggle Error Console</button>
+                <pre id="errorConsole" class="border p-2" style="display: none;"></pre>
+            </div>
+        </main>
+    </div>
+
+    <div id="loading" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.8); color: white; padding: 20px; border-radius: 8px; z-index: 2000;">Loading...</div>
+
+
+  <script src="/scripts/localforage.min.js"></script>
+  <script src="/scripts/moment.min.js"></script>
+  <script src="/scripts/chart.min.js"></script>
+  <script src="/scripts/bootstrap.bundle.min.js"></script>
+  <script src="/scripts/app.js"></script>
+  <script>
+    // Register Service Worker
+    if ('serviceWorkerManager' in navigator.serviceWorker) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('Service Worker registered:', reg.scope))
+          .catch(err => console.error('Service Worker registration failed:', err));
+      });
+    }
+
+    // Handle Add to Home Screen (A2HS) prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      // Show install button (customize based on your UI)
+      const installButton = document.createElement('button');
+      installButton.textContent = 'Install App';
+      installButton.style.position = 'fixed';
+      installButton.style.bottom = '10px';
+      installButton.style.right = '10px';
+      installButton.addEventListener('click', () => {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User installed the PWA');
+          }
+          deferredPrompt = null;
+        });
+      });
+      document.body.appendChild(installButton);
+    });
+  </script>
+</body>
+</html>

@@ -2111,7 +2111,6 @@ document.addEventListener('click', function (event) {
     }
 });
 
-
 class DataManager {
   static baseUrl = 'https://script.google.com/macros/s/YOURSPREADSHEET/executable'; // Replace with your Google Apps Script web app URL
 
@@ -2271,6 +2270,7 @@ class DataManager {
     }
   }
 }
+
 // Main initialization
 document.addEventListener('DOMContentLoaded', async () => {
   // Initialize all components

@@ -2112,6 +2112,165 @@ document.addEventListener('click', function (event) {
 });
 
 
+class DataManager {
+  static baseUrl = 'https://script.google.com/macros/s/YOURSPREADSHEET/executable'; // Replace with your Google Apps Script web app URL
+
+  static async getCSRFToken() {
+    try {
+      const response = await fetch(`${this.baseUrl}?${path}=${encodeURIComponent('getCSRFToken')}`);
+      const data = await response.json();
+      if (data.success) {
+        localStorage.setItem('csrf_token', data.token);
+        return data.token;
+      }
+      throw new Error('Failed to get CSRF token');
+    } catch (err) {
+      Utils.logError(`Error fetching CSRF token: ${err.message}`, 'DataManager');
+      return null;
+    } catch (error) {
+      Utils.logError('Failed to get CSRF token', error.message);
+      return '';
+    }
+  }
+
+  static async login(email, password) {
+    try {
+      const csrfToken = await this.getCSRFToken();
+      const response = await fetch(`${this.baseUrl}?path=${encodeURIComponent('mylogin')}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify({ email, password, csrfToken })
+      });
+      const data = await response.json();
+      if (data.success) {
+        // Store session data
+        localStorage.setItem('sessionToken', JSON.stringify({
+          tokenId: data.token,
+          email,
+          expiry: data.expiryDate
+        }));
+        Utils.showToast('Login successful', 'success');
+        return data;
+      }
+      throw new Error('data.message' || 'Login failed');
+    } catch (err) {
+      Utils.logError(`Login error: ${err.message}`, 'DataManager.login');
+      Utils.showToast(`Login error: ${err.message}`);
+      throw err;
+    }
+  }
+
+  static async checkSession() {
+    const session = localStorage.getItem('sessionToken');
+    if (!session) return false;
+    const { tokenId, email, expiry } = JSON.parse(session);
+    if (new Date(expiry) < new Date()) {
+      localStorage.removeItem('sessionToken');
+      Utils.showToast('Session expired. Please log in.');
+      window.location.href = 'index.html';
+      return false;
+    }
+    return { tokenId, email };
+  }
+
+  static async submitForm(formData, endpoint) {
+    try {
+      const session = await this.checkSession();
+      if (!session.valid) throw new Error('Invalid session');
+      const csrfToken = localStorage.getItem('csrfToken') || await this.getCSRFToken();
+      const response = await fetch(`${this.baseUrl}?${path}=${encodeURIComponent(endpoint.replace('/api/', ''))}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken,
+          'Authorization': `Bearer ${session.token}`,
+        },
+        body: JSON.stringify({ ...formData, ...session, csrfToken })
+      });
+      const data = await response.json();
+      if (!data.success()) {
+        throw new Error('data.message' || 'Form submission failed');
+      }
+      return data;
+    } catch (err) {
+      Utils.logError(`Error submitting form to ${endpoint}: ${err.message}`, 'DataManager');
+      if (!navigator.onLine) {
+        await OfflineManager.queueForm({
+          url: `${this.baseUrl}?${encodeURIComponent(path)}`,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': localStorage.getItem('csrfToken') || '',
+            'Authorization': `Bearer ${session?.token || ''}`,
+          },
+          body: formData,
+          formId: `form-${Date.now()}`,
+          csrfToken: localStorage.getItem('csrfToken') || '',
+          sessionTokenId: session?.tokenId || ''
+        });
+        Utils.showToast('Form queued for sync', 'success');
+      } else {
+        throw err;
+      }
+    }
+  }
+
+  static async fetchData(endpoint) {
+    try {
+      const session = await this.checkSession();
+      const csrfToken = localStorage.getItem('csrfToken') || '' || await this.getCSRFToken();
+      const response = await fetch(`${this.baseUrl}?${encodeURIComponent(path)}`, {
+        headers: {
+          'X-CSRF-Token': csrfToken,
+          'Authorization': `Bearer ${session?.tokenId || ''}`,
+        }
+      });
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error('data.message' || `Failed to fetch ${endpoint}`);
+      }
+      return data.data;
+    } catch (err) {
+      if (!navigator.onLine && ['getdbsalesrecords', 'newreports', 'getdbcustomers', 'getdbvendors', 'getdbexpensesrecords'].includes(endpoint.replace('/api/', ''))) {
+        return Store.getCachedData(endpoint);
+      }
+      Utils.logError(`Fetch error for ${endpoint}: ${err.message}`, 'DataManager');
+      throw err;
+    }
+  }
+
+  static async logout() {
+    try {
+      const session = await this.checkSession();
+      if (!session) return;
+      const csrfToken = localStorage.getItem('csrfToken') || await this.getCSRFToken();
+      const response = await fetch(`${this.baseUrl}?path=${encodeURIComponent('logout')}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken,
+          'Authorization': `Bearer ${session.token}`
+        },
+        body: JSON.stringify({ email: session.email, sessionToken: session.token, csrfToken })
+      });
+      const data = await response.json();
+      if (data.success) {
+        localStorage.removeItem('sessionToken');
+        localStorage.removeItem('csrfToken');
+        Utils.showToast('Logged out successfully', 'success');
+        window.location.href = 'index.html';
+      } else {
+        throw new Error(data.message || 'Logout failed');
+      }
+    } catch (err) {
+      Utils.logError(`Logout error: ${err.message}`, 'DataManager');
+      Utils.showToast(`Error logging out: ${err.message}`);
+    }
+  }
+}
 // Main initialization
 document.addEventListener('DOMContentLoaded', async () => {
   // Initialize all components
